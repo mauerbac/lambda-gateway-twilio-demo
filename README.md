@@ -16,7 +16,7 @@ This example uses [Twilio](https://www.twilio.com/) to send an image from your m
 
 Send an MMS to (650) 200-1944. 
 
-![Example](ttps://s3-us-west-2.amazonaws.com/mauerbac-hosting/pic+(1).png)
+![Example](https://s3-us-west-2.amazonaws.com/mauerbac-hosting/pic+(1).png)
 
 S3 Link: https://s3-us-west-2.amazonaws.com/mauerbac-selfie/ingest-images/19145824224/300007837449609.png
 
