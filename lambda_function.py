@@ -56,10 +56,12 @@ def lambda_handler(event, context):
         bucket = "s3-bucket"
         key = 'ingest-images/' + str(fromNumber.replace('+', '')) + '/' + str(random.getrandbits(50)) + '.png'
         resp_url = 'https://s3-us-west-2.amazonaws.com/{0}/{1}'.format(bucket, str(key))
+        twilio_resp = 'Hi {0}, your S3 link: '.format(name) + 'https://s3-us-west-2.amazonaws.com/{0}/{1}'.format(bucket, str(key))
         # build meta data
         m_data = {'fromNumber': fromNumber, 'url': resp_url, 'name': name}
         s3.Bucket(bucket).put_object(Key=key, Body=image_.read(), ACL='public-read', ContentType='image/png', Metadata=m_data)
-        resp = resp_url
     else:
         response.message("No image found. :( ")
-    return resp
+        twilio_resp = 'No image found'
+    
+    return twilio_resp
