@@ -45,8 +45,8 @@ Step-by-step on how to configure, develop & deploy this app on AWS.
 ###API Gateway
 1. Create a new API. Give it a name and description. This will be our RESTful endpoint. 
 2. Create a resource. The path should `/addphoto` , for example.
-3. We need to add a method to this resource. Create a GET method with Lambda integration and select the function we created earlier. (/PI Gateway isn't able to accept URL encoded post --example here)
-4. Now let's setup the Integration Request. Twilio's GET request will be of type application-x-www-form-urlencoded. This Integration step will map this type to a JSON object, which Lambda requires. In the Integration Requests page create a mapping template. Content-type is application/json and template: 
+3. We need to add a method to this resource. Create a GET method with Lambda integration and select the function we created earlier. API Gateway isn't able to accept URL encoded post --example here)
+4. Now let's setup the Integration Request. Twilio's GET request will be of type application-x-www-form-urlencoded. This Integration step will map this type to a JSON object, which Lambda requires. In the Integration Requests page create a mapping template. Content-type is `application/json` and template:
 ```
 {
     "body" : "$input.params('Body')",
@@ -55,9 +55,11 @@ Step-by-step on how to configure, develop & deploy this app on AWS.
     "numMedia" : "$input.params('NumMedia')"
 }
 ```
-More on [Intergration Requests](http://docs.aws.amazon.com/apigateway/latest/developerguide/how-to-method-settings.html). $input.params parses the request object for the corresponding variable and allows the mapping template to build a JSON object. 
-    [Screenshot](https://s3-us-west-2.amazonaws.com/mauerbac-hosting/intergration.png)  
-5. Let's ensure the response is correct. Twilio requires valid XML. Change the response model for 200 to Content-type: application/xml. Leave models empty. 
+
+ More on [Intergration Requests](http://docs.aws.amazon.com/apigateway/latest/developerguide/how-to-method-settings.html).
+ $input.params parse the request object for the corresponding variable and allows the mapping template to build a JSON object. 
+    [Screenshot](https://s3-us-west-2.amazonaws.com/mauerbac-hosting/intergration.png)
+5.  Let's ensure the response is correct. Twilio requires valid XML. Change the response model for 200 to Content-type: application/xml. Leave models empty. 
     [Screenshot](https://s3-us-west-2.amazonaws.com/mauerbac-hosting/response.png)  
 6. Lambda cannot return XML, so API Gateway needs to build this. This is done in Integration response as another mapping template. This time we want to create Content-type: application/xml and template: 
 
