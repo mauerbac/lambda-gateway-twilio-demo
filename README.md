@@ -91,9 +91,8 @@ Our Lambda function solely returns a string of the SMS body. Here we build the X
   "numMedia" : "1"
 }
 ```
-Click Test. At the bottom of the page you view Execution result and the log output in Cloudwatch logs. This is very helpful for debugging. 
-
-5. Testing API Gateway requires a client that sends requests to the endpoint. I personally like the Chrome Extension [Advanced Rest Client](https://chrome.google.com/webstore/detail/advanced-rest-client/hgmloofddffdnphfgcellkdfbfbjeloo?hl=en-US) Send the endpoint a GET request and view its response. Ensure the S3 link works. You can also test by sending an MMS to phone number and checking the Twilio logs.
+Click Test. At the bottom of the page you view Execution result and the log output in Cloudwatch logs. This is very helpful for debugging.  
+    5. Testing API Gateway requires a client that sends requests to the endpoint. I personally like the Chrome Extension [Advanced Rest Client](https://chrome.google.com/webstore/detail/advanced-rest-client/hgmloofddffdnphfgcellkdfbfbjeloo?hl=en-US) Send the endpoint a GET request and view its response. Ensure the S3 link works. You can also test by sending an MMS to phone number and checking the Twilio logs.
 
 ##Troubleshooting
 
