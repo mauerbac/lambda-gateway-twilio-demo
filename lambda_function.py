@@ -10,6 +10,7 @@ from twilio.rest import TwilioRestClient
 from boto3.dynamodb.conditions import Key, Attr
 
 # create Twilio session
+# 1) Add Twilio Keys
 account_sid = "account id"
 auth_token = "auth token"
 client = TwilioRestClient(account_sid, auth_token)
@@ -17,6 +18,7 @@ client = TwilioRestClient(account_sid, auth_token)
 # create an S3 & Dynamo session
 s3 = boto3.resource('s3')
 session = Session()
+# 2) Add Dynamo Region and Table
 dynamodb = boto3.resource('dynamodb', 'region')
 table_users = dynamodb.Table('table-name')
 
@@ -53,6 +55,7 @@ def lambda_handler(event, context):
         pic_url = image
         twilio_pic = urllib2.Request(pic_url, headers={'User-Agent': "Magic Browser"})
         image_ = urllib2.urlopen(twilio_pic)
+        # 3) Add S3 Bucket
         bucket = "s3-bucket"
         key = 'ingest-images/' + str(fromNumber.replace('+', '')) + '/' + str(random.getrandbits(50)) + '.png'
         resp_url = 'https://s3-us-west-2.amazonaws.com/{0}/{1}'.format(bucket, str(key))
