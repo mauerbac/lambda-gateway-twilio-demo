@@ -21,7 +21,7 @@ Try it by sending an MMS to (650) 200-1944.
 S3 Link: https://s3-us-west-2.amazonaws.com/mauerbac-selfie/ingest-images/19145824224/300007837449609.png
 
 
-## Building the App
+# Building the App
 
 Step-by-step on how to configure, develop & deploy this app on AWS.
 
