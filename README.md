@@ -70,7 +70,7 @@ More on [Intergration Requests](http://docs.aws.amazon.com/apigateway/latest/dev
     </Message>
 </Response>
 ```
-Our Lambda function solely returns a string of the SMS body. Here we build the XML object and use $inputRoot as the string. ![screenshot](https://s3-us-west-2.amazonaws.com/mauerbac-hosting/response.png)
+Our Lambda function solely returns a string of the SMS body. Here we build the XML object and use $inputRoot as the string. [screenshot](https://s3-us-west-2.amazonaws.com/mauerbac-hosting/response.png)
 
 7. Now let's deploy this API, so we can test it! Click the Deploy API button.
 
