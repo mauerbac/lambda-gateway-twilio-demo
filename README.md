@@ -26,29 +26,27 @@ S3 Link: https://s3-us-west-2.amazonaws.com/mauerbac-selfie/ingest-images/191458
 Step-by-step on how to configure, develop & develop this app on AWS.
 
 ###Housekeeping
-
-1) Sign-in to AWS or [Create an Account](https://us-west-2.console.aws.amazon.com).
-2) Pick a region in the console and be consistent throughout this app. Use either us-east-1 or us-west-2.
-3) Create a table in DynamoDB with a single Hash for primary key of type String. We don't need any additional indexes and you can keep the read/write capacity at 1 for this example. ![screenshot](link)
-4) Create an S3 bucket to ingest MMS images. 
-5) Create an IAM role with access to the S3 bucket & the DynamoDB table.
-6) Create/login to a [Twilio]() account & create a phone number with MMS capability. 
+1. Sign-in to AWS or [Create an Account](https://us-west-2.console.aws.amazon.com).
+2. Pick a region in the console and be consistent throughout this app. Use either us-east-1 or us-west-2.
+3. Create a table in DynamoDB with a single Hash for primary key of type String. We don't need any additional indexes and you can keep the read/write capacity at 1 for this example. ![screenshot](link)
+4. Create an S3 bucket to ingest MMS images. 
+5. Create an IAM role with access to the S3 bucket & the DynamoDB table.
+6. Create/login to a [Twilio]() account & create a phone number with MMS capability. 
 
 ###Lambda
-1) Create a new Lambda function. I've provided the function, so we can skip a blueprint.
-2) Give it a name and description. Use Python 2.7 for runtime. 
-3) Use the given Lambda function, `lambda_function.py`. Read through the function and provide a few variables: Twilio credentials, DynamoDB table name & region and S3 ingest bucket. We will upload as .zip because our function requires a few external libraries, such as Twilio Python SDK. Compress httplib2, pytz, twilio & lambda_function.py and upload as a .zip file. 
-4) The Lambda function handler tells Lambda what .py module to use and corresponding method. Ex. main_function.lambda_handler would call the method `def lambda_handler()` inside main_function.py. Let's call it lambda_function.lambda_handler to match lambda_function.py. 
-5) Select the role we created earlier in the housekeeping steps. 
-6) In advanced settings, I recommend changing Timeout to 10 seconds (httplib2 is a bit needy). Currently, max timeout is 60 seconds. 
-7) Review & create function. 
+1. Create a new Lambda function. I've provided the function, so we can skip a blueprint.
+2. Give it a name and description. Use Python 2.7 for runtime. 
+3. Use the given Lambda function, `lambda_function.py`. Read through the function and provide a few variables: Twilio credentials, DynamoDB table name & region and S3 ingest bucket. We will upload as .zip because our function requires a few external libraries, such as Twilio Python SDK. Compress httplib2, pytz, twilio & lambda_function.py and upload as a .zip file. 
+4. The Lambda function handler tells Lambda what .py module to use and corresponding method. Ex. main_function.lambda_handler would call the method `def lambda_handler()` inside main_function.py. Let's call it lambda_function.lambda_handler to match lambda_function.py. 
+5. Select the role we created earlier in the housekeeping steps. 
+6. In advanced settings, I recommend changing Timeout to 10 seconds (httplib2 is a bit needy). Currently, max timeout is 60 seconds. 
+7. Review & create function. 
 
 ###API Gateway
 1) Create a new API. Give it a name and description. This will be our RESTful endpoint. 
 2) Create a resource. The path should /addphoto for example.
 3) We need to add a method to this resource. Create a GET method with Lambda integration and select the function we created earlier. (/PI Gateway isn't able to accept URL encoded post --example here)
 4) Now let's setup the Integration Request. Twilio's GET request will be of type application-x-www-form-urlencoded. This Integration step will map this type to a JSON object, which Lambda requires. In the Integration Requests page create a mapping template. Content-type is application/json and template: 
-
 ```
 {
     "body" : "$input.params('Body')",
@@ -57,12 +55,10 @@ Step-by-step on how to configure, develop & develop this app on AWS.
     "numMedia" : "$input.params('NumMedia')"
 }
 ```
-
 More on [Intergration Requests](http://docs.aws.amazon.com/apigateway/latest/developerguide/how-to-method-settings.html). $input.params parses the request object for the corresponding variable and allows the mapping template to build a JSON object. ![screenshot](link)  
 
-5) Let's ensure the response is correct. Twilio requires valid XML. Change the response model for 200 to Content-type: application/xml. Leave models empty. ![screenshot](link)
-6) Lambda cannot return XML, so API Gateway needs to build this. This is done in Integration response as another mapping template. This time we want to create Content-type: application/xml and template: 
-
+5. Let's ensure the response is correct. Twilio requires valid XML. Change the response model for 200 to Content-type: application/xml. Leave models empty. ![screenshot](link)
+6. Lambda cannot return XML, so API Gateway needs to build this. This is done in Integration response as another mapping template. This time we want to create Content-type: application/xml and template: 
 ```
 #set($inputRoot = $input.path('$'))
 <?xml version="1.0" encoding="UTF-8"?>
@@ -74,18 +70,16 @@ More on [Intergration Requests](http://docs.aws.amazon.com/apigateway/latest/dev
     </Message>
 </Response>
 ```
-
 Our Lambda function solely returns a string of the SMS body. Here we build the XML object and use $inputRoot as the string. 
 
-7) Now let's deploy this API, so we can test it! Click Deploy API button.
+7. Now let's deploy this API, so we can test it! Click Deploy API button.
 
 ###Connect the dots & Testing
 
-1) We should now have a publically accessible GET endpoint. Ex: https://xxxx.execute-api.us-west-2.amazonaws.com/prod/addphoto
-2) Point your Twilio number to this endpoint. ![screenshot](link)
-3) Our app should now be connected. Let's review: Twilio sends a GET request with MMS image, fromNumber and body to API Gateway. API Gateway transforms the GET request into a JSON Object, which is passed to a Lambda function. Lambda processes the object and writes the user to DynamoDB and writes the image to S3. Lambda returns a string which API Gateway uses to create an XML object for TWilio's response to the user. 
-4) First, let's test the Lambda function. Click the Actions dropdown and Configure sample event. We need to simulate the JSON object passed by API Gateway. Example:      
-
+1. We should now have a publically accessible GET endpoint. Ex: https://xxxx.execute-api.us-west-2.amazonaws.com/prod/addphoto
+2. Point your Twilio number to this endpoint. ![screenshot](link)
+3. Our app should now be connected. Let's review: Twilio sends a GET request with MMS image, fromNumber and body to API Gateway. API Gateway transforms the GET request into a JSON Object, which is passed to a Lambda function. Lambda processes the object and writes the user to DynamoDB and writes the image to S3. Lambda returns a string which API Gateway uses to create an XML object for TWilio's response to the user. 
+4. First, let's test the Lambda function. Click the Actions dropdown and Configure sample event. We need to simulate the JSON object passed by API Gateway. Example:      
 ```
 { 
   "body" : "hello",
@@ -94,10 +88,9 @@ Our Lambda function solely returns a string of the SMS body. Here we build the X
   "numMedia" : "1"
 }
 ```
-
 Click Test. At the bottom of the page you view Execution result and the log output in Cloudwatch logs. This is very helpful for debugging. 
 
-5) Testing API Gateway requires a client that sends requests to the endpoint. I personally like the Chrome Extension [Advanced Rest Client](https://chrome.google.com/webstore/detail/advanced-rest-client/hgmloofddffdnphfgcellkdfbfbjeloo?hl=en-US) Send the endpoint a GET request and view its response. Ensure the S3 link works. You can also test by sending an MMS to phone number and checking the Twilio logs.
+5. Testing API Gateway requires a client that sends requests to the endpoint. I personally like the Chrome Extension [Advanced Rest Client](https://chrome.google.com/webstore/detail/advanced-rest-client/hgmloofddffdnphfgcellkdfbfbjeloo?hl=en-US) Send the endpoint a GET request and view its response. Ensure the S3 link works. You can also test by sending an MMS to phone number and checking the Twilio logs.
 
 
 ##Troubleshooting
