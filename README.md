@@ -48,21 +48,22 @@ Step-by-step on how to configure, develop & develop this app on AWS.
 2) Create a resource. The path should /addphoto for example.
 3) We need to add a method to this resource. Create a GET method with Lambda integration and select the function we created earlier. (/PI Gateway isn't able to accept URL encoded post --example here)
 4) Now let's setup the Integration Request. Twilio's GET request will be of type application-x-www-form-urlencoded. This Integration step will map this type to a JSON object, which Lambda requires. In the Integration Requests page create a mapping template. Content-type is application/json and template: 
-'''
+
+```
 {
     "body" : "$input.params('Body')",
     "fromNumber" :  "$input.params('From')",
     "image" : "$input.params('MediaUrl0')",
     "numMedia" : "$input.params('NumMedia')"
 }
+```
 
-'''
 More on [Intergration Requests](http://docs.aws.amazon.com/apigateway/latest/developerguide/how-to-method-settings.html). $input.params parses the request object for the corresponding variable and allows the mapping template to build a JSON object. ![screenshot](link)  
 
 5) Let's ensure the response is correct. Twilio requires valid XML. Change the response model for 200 to Content-type: application/xml. Leave models empty. ![screenshot](link)
 6) Lambda cannot return XML, so API Gateway needs to build this. This is done in Integration response as another mapping template. This time we want to create Content-type: application/xml and template: 
 
-'''
+```
 #set($inputRoot = $input.path('$'))
 <?xml version="1.0" encoding="UTF-8"?>
 <Response>
@@ -72,7 +73,8 @@ More on [Intergration Requests](http://docs.aws.amazon.com/apigateway/latest/dev
         </Body>
     </Message>
 </Response>
-'''
+```
+
 Our Lambda function solely returns a string of the SMS body. Here we build the XML object and use $inputRoot as the string. 
 
 7) Now let's deploy this API, so we can test it! Click Deploy API button.
@@ -84,14 +86,14 @@ Our Lambda function solely returns a string of the SMS body. Here we build the X
 3) Our app should now be connected. Let's review: Twilio sends a GET request with MMS image, fromNumber and body to API Gateway. API Gateway transforms the GET request into a JSON Object, which is passed to a Lambda function. Lambda processes the object and writes the user to DynamoDB and writes the image to S3. Lambda returns a string which API Gateway uses to create an XML object for TWilio's response to the user. 
 4) First, let's test the Lambda function. Click the Actions dropdown and Configure sample event. We need to simulate the JSON object passed by API Gateway. Example:      
 
-'''
+```
 { 
   "body" : "hello",
   "fromNumber" : "+19145554224" ,
   "image" : "https://api.twilio.com/2010-04-01/Accounts/AC361180d5a1fc4530bdeefb7fbba22338/Messages/MM7ab00379ec67dd1391a2b13388dfd2c0/Media/ME7a70cb396964e377bab09ef6c09eda2a",
   "numMedia" : "1"
 }
-'''
+```
 
 Click Test. At the bottom of the page you view Execution result and the log output in Cloudwatch logs. This is very helpful for debugging. 
 
@@ -100,7 +102,7 @@ Click Test. At the bottom of the page you view Execution result and the log outp
 
 ##Troubleshooting
 
-1) Lambda have access? 
-2) Cloudwatch Logs
+1. Lambda have access? 
+2. Cloudwatch Logs
 
 
