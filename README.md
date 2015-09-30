@@ -43,10 +43,10 @@ Step-by-step on how to configure, develop & develop this app on AWS.
 7. Review & create function. 
 
 ###API Gateway
-1) Create a new API. Give it a name and description. This will be our RESTful endpoint. 
-2) Create a resource. The path should /addphoto for example.
-3) We need to add a method to this resource. Create a GET method with Lambda integration and select the function we created earlier. (/PI Gateway isn't able to accept URL encoded post --example here)
-4) Now let's setup the Integration Request. Twilio's GET request will be of type application-x-www-form-urlencoded. This Integration step will map this type to a JSON object, which Lambda requires. In the Integration Requests page create a mapping template. Content-type is application/json and template: 
+1. Create a new API. Give it a name and description. This will be our RESTful endpoint. 
+2. Create a resource. The path should /addphoto for example.
+3. We need to add a method to this resource. Create a GET method with Lambda integration and select the function we created earlier. (/PI Gateway isn't able to accept URL encoded post --example here)
+4. Now let's setup the Integration Request. Twilio's GET request will be of type application-x-www-form-urlencoded. This Integration step will map this type to a JSON object, which Lambda requires. In the Integration Requests page create a mapping template. Content-type is application/json and template: 
 ```
 {
     "body" : "$input.params('Body')",
