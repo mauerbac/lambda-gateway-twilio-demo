@@ -16,9 +16,9 @@ This example uses [Twilio](https://www.twilio.com/) to save an image from your m
 
 Try it by sending an MMS to (650) 200-1944. 
 
-![Example](https://s3-us-west-2.amazonaws.com/mauerbac-hosting/pic+(1).png)
+![Example](https://s3-us-west-2.amazonaws.com/mauerbac-hosting/screenshot2.png)
 
-S3 Link: https://s3-us-west-2.amazonaws.com/mauerbac-selfie/ingest-images/19145824224/300007837449609.png
+S3 Link: https://s3-us-west-2.amazonaws.com/mauerbac-selfie/ingest-images/19145824224/795221908928951.png
 
 
 # Building the App
@@ -28,10 +28,10 @@ Step-by-step on how to configure, develop & deploy this app on AWS.
 ###Housekeeping
 1. Sign-in to AWS or [Create an Account](https://us-west-2.console.aws.amazon.com).
 2. Pick a region in the console and be consistent throughout this app. Use either us-east-1, us-west-2 & eu-west-1. 
-3. Create a table in DynamoDB with a single Hash for primary key of type String. We don't need any additional indexes and you can keep the read/write capacity at 1 for this example. ![screenshot](link)
+3. Create a table in DynamoDB with a single Hash for primary key of type String. We don't need any additional indexes and you can keep the read/write capacity at 1 for this example. [Screenshot](https://s3-us-west-2.amazonaws.com/mauerbac-hosting/dynamoDB.png)
 4. Create an S3 bucket to ingest MMS images. 
 5. Create an IAM role with access to the S3 bucket & the DynamoDB table.
-6. Create/login to a [Twilio]() account & create a phone number with MMS capability. 
+6. Create/login to a Twilio account & create a phone number with MMS capability. 
 
 ###Lambda
 1. Create a new Lambda function. I've provided the function, so we can skip a blueprint.
@@ -55,9 +55,9 @@ Step-by-step on how to configure, develop & deploy this app on AWS.
     "numMedia" : "$input.params('NumMedia')"
 }
 ```
-More on [Intergration Requests](http://docs.aws.amazon.com/apigateway/latest/developerguide/how-to-method-settings.html). $input.params parses the request object for the corresponding variable and allows the mapping template to build a JSON object. ![screenshot](link)  
+More on [Intergration Requests](http://docs.aws.amazon.com/apigateway/latest/developerguide/how-to-method-settings.html). $input.params parses the request object for the corresponding variable and allows the mapping template to build a JSON object. [Screenshot](https://s3-us-west-2.amazonaws.com/mauerbac-hosting/intergration.png)  
 
-5. Let's ensure the response is correct. Twilio requires valid XML. Change the response model for 200 to Content-type: application/xml. Leave models empty. ![screenshot](link)
+5. Let's ensure the response is correct. Twilio requires valid XML. Change the response model for 200 to Content-type: application/xml. Leave models empty. [Screenshot](https://s3-us-west-2.amazonaws.com/mauerbac-hosting/response.png)
 6. Lambda cannot return XML, so API Gateway needs to build this. This is done in Integration response as another mapping template. This time we want to create Content-type: application/xml and template: 
 ```
 #set($inputRoot = $input.path('$'))
@@ -70,14 +70,14 @@ More on [Intergration Requests](http://docs.aws.amazon.com/apigateway/latest/dev
     </Message>
 </Response>
 ```
-Our Lambda function solely returns a string of the SMS body. Here we build the XML object and use $inputRoot as the string. ![screenshot](link)
+Our Lambda function solely returns a string of the SMS body. Here we build the XML object and use $inputRoot as the string. ![screenshot](https://s3-us-west-2.amazonaws.com/mauerbac-hosting/response.png)
 
 7. Now let's deploy this API, so we can test it! Click the Deploy API button.
 
 ###Connecting the dots & Testing
 
 1. We should now have a publically accessible GET endpoint. Ex: https://xxxx.execute-api.us-west-2.amazonaws.com/prod/addphoto
-2. Point your Twilio number to this endpoint. ![screenshot](link)
+2. Point your Twilio number to this endpoint. [Screenshot](https://s3-us-west-2.amazonaws.com/mauerbac-hosting/twilio.png)
 3. Our app should now be connected. Let's review: Twilio sends a GET request with MMS image, fromNumber and body to API Gateway. API Gateway transforms the GET request into a JSON object, which is passed to a Lambda function. Lambda processes the object and writes the user to DynamoDB and writes the image to S3. Lambda returns a string which API Gateway uses to create an XML object for Twilio's response to the user. 
 4. First, let's test the Lambda function. Click the Actions dropdown and Configure sample event. We need to simulate the JSON object passed by API Gateway. Example:      
 ```
@@ -98,3 +98,5 @@ Click Test. At the bottom of the page you view Execution result and the log outp
 1. Ensure your Lambda function is using the correct IAM role. The role must have the ability to write/read to DynamoDB and S3. 
 2. All Lambda interactions are logged in Cloudwatch logs. View the logs for debugging. 
 3. Contact me for help
+
+
