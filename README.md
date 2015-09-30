@@ -56,9 +56,9 @@ Step-by-step on how to configure, develop & deploy this app on AWS.
 }
 ```
 More on [Intergration Requests](http://docs.aws.amazon.com/apigateway/latest/developerguide/how-to-method-settings.html). $input.params parses the request object for the corresponding variable and allows the mapping template to build a JSON object. [Screenshot](https://s3-us-west-2.amazonaws.com/mauerbac-hosting/intergration.png)  
+5 Let's ensure the response is correct. Twilio requires valid XML. Change the response model for 200 to Content-type: application/xml. Leave models empty. [Screenshot](https://s3-us-west-2.amazonaws.com/mauerbac-hosting/response.png)
 
-5. Let's ensure the response is correct. Twilio requires valid XML. Change the response model for 200 to Content-type: application/xml. Leave models empty. [Screenshot](https://s3-us-west-2.amazonaws.com/mauerbac-hosting/response.png)
-6. Lambda cannot return XML, so API Gateway needs to build this. This is done in Integration response as another mapping template. This time we want to create Content-type: application/xml and template: 
+6 Lambda cannot return XML, so API Gateway needs to build this. This is done in Integration response as another mapping template. This time we want to create Content-type: application/xml and template: 
 ```
 #set($inputRoot = $input.path('$'))
 <?xml version="1.0" encoding="UTF-8"?>
@@ -68,11 +68,11 @@ More on [Intergration Requests](http://docs.aws.amazon.com/apigateway/latest/dev
             $inputRoot
         </Body>
     </Message>
-</Response>
+</Response> 
 ```
-Our Lambda function solely returns a string of the SMS body. Here we build the XML object and use $inputRoot as the string. [screenshot](https://s3-us-west-2.amazonaws.com/mauerbac-hosting/response.png)
+Our Lambda function solely returns a string of the SMS body. Here we build the XML object and use $inputRoot as the string. [Screenshot](https://s3-us-west-2.amazonaws.com/mauerbac-hosting/responseModel.png)
 
-7. Now let's deploy this API, so we can test it! Click the Deploy API button.
+7 Now let's deploy this API, so we can test it! Click the Deploy API button.
 
 ###Connecting the dots & Testing
 
@@ -91,7 +91,6 @@ Our Lambda function solely returns a string of the SMS body. Here we build the X
 Click Test. At the bottom of the page you view Execution result and the log output in Cloudwatch logs. This is very helpful for debugging. 
 
 5. Testing API Gateway requires a client that sends requests to the endpoint. I personally like the Chrome Extension [Advanced Rest Client](https://chrome.google.com/webstore/detail/advanced-rest-client/hgmloofddffdnphfgcellkdfbfbjeloo?hl=en-US) Send the endpoint a GET request and view its response. Ensure the S3 link works. You can also test by sending an MMS to phone number and checking the Twilio logs.
-
 
 ##Troubleshooting
 
