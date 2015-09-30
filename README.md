@@ -100,4 +100,8 @@ Click Test. At the bottom of the page you view Execution result and the log outp
 2. All Lambda interactions are logged in Cloudwatch logs. View the logs for debugging. 
 3. Lambda/API Gateway Forums
 
+###Architecture
+
+![Architecture](https://s3-us-west-2.amazonaws.com/mauerbac-hosting/Screen+Shot+2015-09-30+at+4.00.47+PM.png)
+
 
