@@ -55,10 +55,12 @@ Step-by-step on how to configure, develop & deploy this app on AWS.
     "numMedia" : "$input.params('NumMedia')"
 }
 ```
-More on [Intergration Requests](http://docs.aws.amazon.com/apigateway/latest/developerguide/how-to-method-settings.html). $input.params parses the request object for the corresponding variable and allows the mapping template to build a JSON object. [Screenshot](https://s3-us-west-2.amazonaws.com/mauerbac-hosting/intergration.png)  
-5. Let's ensure the response is correct. Twilio requires valid XML. Change the response model for 200 to Content-type: application/xml. Leave models empty. [Screenshot](https://s3-us-west-2.amazonaws.com/mauerbac-hosting/response.png)
-
+More on [Intergration Requests](http://docs.aws.amazon.com/apigateway/latest/developerguide/how-to-method-settings.html). $input.params parses the request object for the corresponding variable and allows the mapping template to build a JSON object. 
+    [Screenshot](https://s3-us-west-2.amazonaws.com/mauerbac-hosting/intergration.png)  
+5. Let's ensure the response is correct. Twilio requires valid XML. Change the response model for 200 to Content-type: application/xml. Leave models empty. 
+    [Screenshot](https://s3-us-west-2.amazonaws.com/mauerbac-hosting/response.png)  
 6. Lambda cannot return XML, so API Gateway needs to build this. This is done in Integration response as another mapping template. This time we want to create Content-type: application/xml and template: 
+
 ```
 #set($inputRoot = $input.path('$'))
 <?xml version="1.0" encoding="UTF-8"?>
@@ -70,8 +72,7 @@ More on [Intergration Requests](http://docs.aws.amazon.com/apigateway/latest/dev
     </Message>
 </Response> 
 ```
-Our Lambda function solely returns a string of the SMS body. Here we build the XML object and use $inputRoot as the string. [Screenshot](https://s3-us-west-2.amazonaws.com/mauerbac-hosting/responseModel.png)
-
+Our Lambda function solely returns a string of the SMS body. Here we build the XML object and use $inputRoot as the string.     [Screenshot](https://s3-us-west-2.amazonaws.com/mauerbac-hosting/responseModel.png)  
 7. Now let's deploy this API, so we can test it! Click the Deploy API button.
 
 ###Connecting the dots & Testing
