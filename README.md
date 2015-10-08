@@ -1,4 +1,4 @@
-#AWSLambda + API Gateway Example  
+#AWS Lambda + API Gateway Example  
 
 This example uses [Twilio](https://www.twilio.com/) to save an image from your mobile phone to the AWS cloud. A user sends an image using MMS to a Twilio phone number which sends a request to an Amazon API Gateway endpoint that triggers a Lambda function. The app then returns a publicly accessible link to the image in AWS S3. This app uses AWS Lambda, API Gateway, DynamoDB & S3. It is also 100% sever-less!
 
