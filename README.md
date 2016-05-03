@@ -2,6 +2,8 @@
 
 This example uses [Twilio](https://www.twilio.com/) to save an image from your mobile phone to the AWS cloud. A user sends an image using MMS to a Twilio phone number which sends a request to an Amazon API Gateway endpoint that triggers a Lambda function. The app then returns a publicly accessible link to the image in AWS S3. This app uses AWS Lambda, API Gateway, DynamoDB & S3. It is also 100% serverless!
 
+Read the [blog post](https://medium.com/aws-activate-startup-blog/triggering-lambda-functions-via-text-messages-d6fd0b1f83d4#.n363vcb01)!
+
 ###AWS Lambda
 
 [Lambda](https://aws.amazon.com/lambda/) is a compute service that runs your code in response to events. Events are triggered or invoked by resources in your AWS environment or via API Gateway. Here our Lambda function is triggered by an API Gateway endpoint that Twilio hits after an MMS is received. The Lambda function is responsible for writing user info to DynamoDB, writing the image to S3 with meta data and returning a response to Twilio. 
