@@ -18,7 +18,7 @@ Read the [blog post](https://medium.com/aws-activate-startup-blog/triggering-lam
 
 Try it by sending an MMS to (650) 200-1944. 
 
-![Example](https://s3-us-west-2.amazonaws.com/mauerbac-hosting/screenshot2.png)
+![Example](https://s3-us-west-2.amazonaws.com/mauerbac-web-images/screenshot2.png)
 
 S3 Link: https://s3-us-west-2.amazonaws.com/mauerbac-selfie/ingest-images/19145824224/795221908928951.png
 
@@ -104,6 +104,6 @@ Click Test. At the bottom of the page you view Execution result and the log outp
 
 ##Architecture
 
-![Architecture](https://s3-us-west-2.amazonaws.com/mauerbac-hosting/Screen+Shot+2015-09-30+at+4.00.47+PM.png)
+![Architecture](https://s3-us-west-2.amazonaws.com/mauerbac-web-images/image_1.png)
 
 
