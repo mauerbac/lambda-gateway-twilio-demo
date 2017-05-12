@@ -1,20 +1,20 @@
-#Lambda + API Gateway Example  
+# Lambda + API Gateway Example  
 
 This example uses [Twilio](https://www.twilio.com/) to save an image from your mobile phone to the AWS cloud. A user sends an image using MMS to a Twilio phone number which sends a request to an Amazon API Gateway endpoint that triggers a Lambda function. The app then returns a publicly accessible link to the image in AWS S3. This app uses AWS Lambda, API Gateway, DynamoDB & S3. It is also 100% serverless!
 
 Read the [blog post](https://medium.com/aws-activate-startup-blog/triggering-lambda-functions-via-text-messages-d6fd0b1f83d4#.n363vcb01)!
 
-###AWS Lambda
+### AWS Lambda
 
 [Lambda](https://aws.amazon.com/lambda/) is a compute service that runs your code in response to events. Events are triggered or invoked by resources in your AWS environment or via API Gateway. Here our Lambda function is triggered by an API Gateway endpoint that Twilio hits after an MMS is received. The Lambda function is responsible for writing user info to DynamoDB, writing the image to S3 with meta data and returning a response to Twilio. 
 
-###Amazon API Gateway 
+### Amazon API Gateway 
 [API Gateway](https://aws.amazon.com/api-gateway/) is a fully managed API as a service where you can create, publish, maintain, monitor, and secure APIs at any scale. In this app, we use API Gateway to create an endpoint for Twilio to make a GET request. API Gateway transforms Twilio's URL encoded request into a JSON object, so that Lambda can process it. Lastly, API Gateway takes Lambda's response and builds an XML object for Twilio. 
 
-###Amazon DynamoDB & Amazon S3
+### Amazon DynamoDB & Amazon S3
 [DynamoDB](https://aws.amazon.com/dynamodb/) is Amazon's non-relational database service. This app leverages DynamoDB to store user data. [S3](https://aws.amazon.com/s3/) provides developers with object level storage that is endlessly scalable. We use S3 to store images received via MMS. 
 
-#Usage 
+# Usage 
 
 Try it by sending an MMS to (650) 200-1944. 
 
@@ -25,7 +25,7 @@ Try it by sending an MMS to (650) 200-1944.
 
 Step-by-step on how to configure, develop & deploy this app on AWS.
 
-###Housekeeping
+### Housekeeping
 1. Sign-in to AWS or [Create an Account](https://us-west-2.console.aws.amazon.com).
 2. Pick a region in the console and be consistent throughout this app. Use either `us-east-1`, `us-west-2` & `eu-west-1`. 
 3. Create a table in DynamoDB with a single Hash for primary key of type String. We don't need any additional indexes and you can keep the read/write capacity at 1 for this example. [Screenshot](https://s3-us-west-2.amazonaws.com/mauerbac-web-images/dynamoDB.png)
@@ -33,7 +33,7 @@ Step-by-step on how to configure, develop & deploy this app on AWS.
 5. Create an IAM role with access to the S3 bucket & the DynamoDB table.
 6. Create/login to a Twilio account & create a phone number with MMS capability. 
 
-###Lambda
+### Lambda
 1. Create a new Lambda function. I've provided the function, so we can skip a blueprint.
 2. Give it a name and description. Use Python 2.7 for runtime. 
 3. Use the given Lambda function, `lambda_function.py`. Read through the module and provide a few variables: Twilio credentials, DynamoDB table name & region and S3 ingest bucket. We will upload as a .zip because our function requires a few external libraries, such as Twilio Python SDK. Compress httplib2, pytz, twilio & lambda_function.py and upload as a .zip file. 
@@ -42,7 +42,7 @@ Step-by-step on how to configure, develop & deploy this app on AWS.
 6. In advanced settings, I recommend changing Timeout to 10 seconds (httplib2 is a bit needy). Currently, max timeout is 60 seconds. 
 7. Review & create function. 
 
-###API Gateway
+### API Gateway
 1. Create a new API. Give it a name and description. This will be our RESTful endpoint. 
 2. Create a resource. The path should be `/addphoto` , for example.
 3. We need to add a method to this resource. Create a GET method with Lambda integration and select the function we created earlier. API Gateway isn't able to process POST requests that are URL encoded, so we are using GET as a workaround.
@@ -77,7 +77,7 @@ Step-by-step on how to configure, develop & deploy this app on AWS.
 Our Lambda function solely returns a string of the SMS body. Here we build the XML object and use `$inputRoot` as the string.     [Screenshot](https://s3-us-west-2.amazonaws.com/mauerbac-web-images/responseModel.png)  
 7. Now let's deploy this API, so we can test it! Click the Deploy API button.
 
-###Connecting the dots & Testing
+### Connecting the dots & Testing
 
 1. We should now have a publically accessible GET endpoint. Ex: `https://xxxx.execute-api.us-west-2.amazonaws.com/prod/addphoto`
 2. Point your Twilio number to this endpoint. [Screenshot](https://s3-us-west-2.amazonaws.com/mauerbac-web-images/twilio.png)
@@ -94,13 +94,13 @@ Our Lambda function solely returns a string of the SMS body. Here we build the X
 Click Test. At the bottom of the page you view Execution result and the log output in Cloudwatch logs. This is very helpful for debugging.  
     5. Testing API Gateway requires a client that sends requests to the endpoint. I personally like the Chrome Extension [Advanced Rest Client](https://chrome.google.com/webstore/detail/advanced-rest-client/hgmloofddffdnphfgcellkdfbfbjeloo?hl=en-US) Send the endpoint a GET request and view its response. Ensure the S3 link works. You can also test by sending an MMS to phone number and checking the Twilio logs.
 
-##Troubleshooting
+## Troubleshooting
 
 1. Ensure your Lambda function is using the correct IAM role. The role must have the ability to write/read to DynamoDB and S3. 
 2. All Lambda interactions are logged in Cloudwatch logs. View the logs for debugging. 
 3. Lambda/API Gateway Forums
 
-##Architecture
+## Architecture
 
 ![Architecture](https://s3-us-west-2.amazonaws.com/mauerbac-web-images/image_1.png)
 
